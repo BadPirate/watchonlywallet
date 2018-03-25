@@ -2,6 +2,7 @@
   require_once('vendor/hh_autoload.php');
 
   $btc = isset($_GET['btc']) ? explode(',',$_GET['btc']) : [];
+  $eth = isset($_GET['eth']) ? explode(',',$_GET['eth']) : [];
 
   $addresses =
   <div class="panel">
@@ -16,7 +17,7 @@
     foreach ($btc as $address) {
       $value = file_get_contents("https://blockchain.info/q/addressbalance/$address")/100000000;
       $btctotal = $value + $btctotal;
-      $deleteAction = "deleteBitcoin('$address');";
+      $deleteAction = "delete_coin_address('btc','$address');";
       $addresses->appendChild(
         <div class="list-group-item">
           <i class="fa fa-trash pull-right" onclick={$deleteAction}/>
@@ -30,22 +31,45 @@
     }
   }
 
-  setlocale(LC_MONETARY, 'en_US');
-  $btcRate = 1/file_get_contents("https://blockchain.info/tobtc?currency=USD&value=1");
-  $btcUSDTotal = money_format('%.2n',$btctotal * $btcRate);
-  $total =
-  <div class="panel">
-    {$btctotal}<i class="fa fa-btc"/> @ {$btcRate}/USD = {$btcUSDTotal}<br/>
-  </div>;
+  $total = <div/>;
+  if ($btctotal > 0)
+  {
+    setlocale(LC_MONETARY, 'en_US');
+    $btcRate = 1/file_get_contents("https://blockchain.info/tobtc?currency=USD&value=1");
+    $btcUSDTotal = money_format('%.2n',$btctotal * $btcRate);
+    $total =
+    <div class="panel">
+      {$btctotal}<i class="fa fa-btc"/> @ {$btcRate}/USD = {$btcUSDTotal}<br/>
+    </div>;
+  }
 
-  $addAddress =
-  <div class="input-group">
-    <input type="text" placeholder="Bitcoin Address" class="form-control" id="bitcoin-address-add"/>
-    <span class="input-group-btn">
-      <button class="btn btn-default" type="button" onclick="addBitcoin($( '#bitcoin-address-add' ).val());">Add</button>
-    </span>
-  </div>;
+  function addCoin($coinType = "btc",) {
+    $divID = "$coinType-address-add";
+    $onclick = "add_coin_address('$coinType', $( '#$divID' ).val());";
+    $placeholder = strtoupper($coinType)." Address";
+    return
+    <div class="input-group">
+      <input type="text" placeholder={$placeholder} class="form-control" id={$divID}/>
+      <span class="input-group-btn">
+        <button class="btn btn-default" type="button" onclick={$onclick}>Add</button>
+      </span>
+    </div>;
+  }
 
+  $addAddress = <div class="panel"/>;
+  $addAddress->appendChild(addCoin("btc"));
+  // $addAddress->appendChild(addCoin("eth"));
+
+  $otherCoins =
+    <div class="panel">
+      <p>I built this site to track the total values of the various crypto currencies I hold.
+        As such, it currently only supports those coins that I have some value in.  If you'd like to see
+        another type of crypto currency supported, the easiest way would be to put about $10 in a wallet of that
+        type, and send the private key to <a href="mailto:request@watchonlywallet.net">request@watchonlywallet.net</a>
+        along with information about the blockchain for that wallet as known, and if I add it I'll transfer the coins :)</p>
+    </div>;
+
+  $js_addresses = "{ 'btc' : ".json_encode($btc).", 'eth' : ".json_encode($eth)."}";
   $template =
   <html lang="en">
     <head>
@@ -63,7 +87,7 @@
         src="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"
       />
       <script type="text/javascript">
-        var bitcoin_addresses = {json_encode($btc)};
+        var crypto_addresses = {$js_addresses};
       </script>
       <script src="wow.js"></script>
       <title>Watcher Online Wallet</title>
@@ -72,6 +96,7 @@
     {$addresses}
     {$total}
     {$addAddress}
+    {$otherCoins}
     </body>
   </html>;
 
