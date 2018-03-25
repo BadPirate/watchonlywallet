@@ -1,0 +1,21 @@
+{
+    "name": "facebook/xhp-lib",
+    "description": "Class library for XHP",
+    "keywords": ["facebook", "xhp", "hhvm", "hack"],
+    "homepage": "https://github.com/facebook/xhp-lib",
+    "license": ["BSD-3-Clause"],
+    "require": {
+        "hhvm": "~3.23",
+        "hhvm/type-assert": "^3.0",
+        "hhvm/hhvm-autoload": "^1.5"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^5.1.0",
+        "91carriage/phpunit-hhi": "^5.1.0"
+    },
+    "extra": {
+        "branch-alias": {
+            "dev-master": "2.x-dev"
+        }
+    }
+}

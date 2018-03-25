@@ -1,0 +1,245 @@
+[
+    {
+        "name": "facebook/xhp-lib",
+        "version": "v2.5.1",
+        "version_normalized": "2.5.1.0",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/hhvm/xhp-lib.git",
+            "reference": "5ef653637aa15aed232ff913b3c66b346df0932a"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/hhvm/xhp-lib/zipball/5ef653637aa15aed232ff913b3c66b346df0932a",
+            "reference": "5ef653637aa15aed232ff913b3c66b346df0932a",
+            "shasum": ""
+        },
+        "require": {
+            "hhvm": "~3.23",
+            "hhvm/hhvm-autoload": "^1.5",
+            "hhvm/type-assert": "^3.0"
+        },
+        "require-dev": {
+            "91carriage/phpunit-hhi": "^5.1.0",
+            "phpunit/phpunit": "^5.1.0"
+        },
+        "time": "2018-02-09T20:32:16+00:00",
+        "type": "library",
+        "extra": {
+            "branch-alias": {
+                "dev-master": "2.x-dev"
+            }
+        },
+        "installation-source": "dist",
+        "notification-url": "https://packagist.org/downloads/",
+        "license": [
+            "BSD-3-Clause"
+        ],
+        "description": "Class library for XHP",
+        "homepage": "https://github.com/facebook/xhp-lib",
+        "keywords": [
+            "facebook",
+            "hack",
+            "hhvm",
+            "xhp"
+        ]
+    },
+    {
+        "name": "fredemmott/hack-error-suppressor",
+        "version": "v1.0.1",
+        "version_normalized": "1.0.1.0",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/fredemmott/hack-error-suppressor.git",
+            "reference": "cb145c771b50f4f4eeec8c9cac4740df3d486a12"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/fredemmott/hack-error-suppressor/zipball/cb145c771b50f4f4eeec8c9cac4740df3d486a12",
+            "reference": "cb145c771b50f4f4eeec8c9cac4740df3d486a12",
+            "shasum": ""
+        },
+        "require-dev": {
+            "91carriage/phpunit-hhi": "^5.6",
+            "phpunit/phpunit": "^5.7"
+        },
+        "time": "2017-05-02T03:07:37+00:00",
+        "type": "library",
+        "installation-source": "dist",
+        "autoload": {
+            "classmap": [
+                "src/"
+            ]
+        },
+        "notification-url": "https://packagist.org/downloads/",
+        "license": [
+            "ISC"
+        ],
+        "authors": [
+            {
+                "name": "Fred Emmott",
+                "email": "fred@fredemmott.co.uk"
+            }
+        ],
+        "description": "Suppress HHVM's automatic conversion of typechecker errors to fatals."
+    },
+    {
+        "name": "hhvm/hhvm-autoload",
+        "version": "v1.6.2",
+        "version_normalized": "1.6.2.0",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/hhvm/hhvm-autoload.git",
+            "reference": "2beebbb5982e77237ec853ee1231860c3c295bf3"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/hhvm/hhvm-autoload/zipball/2beebbb5982e77237ec853ee1231860c3c295bf3",
+            "reference": "2beebbb5982e77237ec853ee1231860c3c295bf3",
+            "shasum": ""
+        },
+        "require": {
+            "composer-plugin-api": "^1.0",
+            "fredemmott/hack-error-suppressor": "^1.0",
+            "hhvm": "^3.23"
+        },
+        "replace": {
+            "facebook/hhvm-autoload": "1.*"
+        },
+        "require-dev": {
+            "91carriage/phpunit-hhi": "^5.5",
+            "phpunit/phpunit": "^5.5"
+        },
+        "time": "2018-02-27T18:31:14+00:00",
+        "bin": [
+            "bin/hh-autoload"
+        ],
+        "type": "composer-plugin",
+        "extra": {
+            "class": [
+                "Facebook\\AutoloadMap\\ComposerPlugin"
+            ]
+        },
+        "installation-source": "dist",
+        "autoload": {
+            "classmap": [
+                "src/Writer.php",
+                "src/"
+            ],
+            "files": [
+                "src/AutoloadMap.php",
+                "src/Config.php",
+                "src/TypeAssert.php"
+            ]
+        },
+        "notification-url": "https://packagist.org/downloads/"
+    },
+    {
+        "name": "hhvm/hsl",
+        "version": "v1.4.0",
+        "version_normalized": "1.4.0.0",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/hhvm/hsl.git",
+            "reference": "2d40281ec595b25a09bbe51d9216edbf1ad55a42"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/hhvm/hsl/zipball/2d40281ec595b25a09bbe51d9216edbf1ad55a42",
+            "reference": "2d40281ec595b25a09bbe51d9216edbf1ad55a42",
+            "shasum": ""
+        },
+        "require": {
+            "hhvm": "^3.23.2",
+            "hhvm/hhvm-autoload": "^1.4"
+        },
+        "require-dev": {
+            "91carriage/phpunit-hhi": "^5.7",
+            "facebook/fbexpect": "^0.4",
+            "phpunit/phpunit": "^5.7"
+        },
+        "time": "2018-03-09T21:53:48+00:00",
+        "type": "library",
+        "installation-source": "dist",
+        "notification-url": "https://packagist.org/downloads/",
+        "description": "The Hack Standard Library"
+    },
+    {
+        "name": "hhvm/type-assert",
+        "version": "v3.2.1",
+        "version_normalized": "3.2.1.0",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/hhvm/type-assert.git",
+            "reference": "8f70814c8268f50e2fa728893d3ad9cad73df398"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/hhvm/type-assert/zipball/8f70814c8268f50e2fa728893d3ad9cad73df398",
+            "reference": "8f70814c8268f50e2fa728893d3ad9cad73df398",
+            "shasum": ""
+        },
+        "require": {
+            "hhvm": "^3.23.0",
+            "hhvm/hhvm-autoload": "^1.4",
+            "hhvm/hsl": "^1.0"
+        },
+        "require-dev": {
+            "91carriage/phpunit-hhi": "~5.1",
+            "facebook/fbexpect": "^0.2.0 | ^0.3.0 | ^0.4.0",
+            "phpunit/phpunit": "~5.1"
+        },
+        "time": "2018-02-09T17:05:23+00:00",
+        "type": "library",
+        "installation-source": "dist",
+        "notification-url": "https://packagist.org/downloads/",
+        "description": "Convert untyped data to typed data",
+        "keywords": [
+            "TypeAssert",
+            "hack"
+        ]
+    },
+    {
+        "name": "hhvm/xhp-bootstrap",
+        "version": "dev-master",
+        "version_normalized": "9999999-dev",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/fbsamples/xhp-bootstrap.git",
+            "reference": "d154e55e350dbe2d7b3ee41721f65beca72a0065"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/fbsamples/xhp-bootstrap/zipball/d154e55e350dbe2d7b3ee41721f65beca72a0065",
+            "reference": "d154e55e350dbe2d7b3ee41721f65beca72a0065",
+            "shasum": ""
+        },
+        "require": {
+            "facebook/xhp-lib": "^2.2.0"
+        },
+        "require-dev": {
+            "phpunit/phpunit": "^3.5"
+        },
+        "time": "2017-02-03T00:15:46+00:00",
+        "type": "library",
+        "installation-source": "source",
+        "autoload": {
+            "classmap": [
+                "lib/"
+            ]
+        },
+        "notification-url": "https://packagist.org/downloads/",
+        "license": [
+            "BSD-3-Clause"
+        ],
+        "description": "Use Bootstrap with XHP",
+        "homepage": "https://github.com/hhvm/xhp-bootstrap",
+        "keywords": [
+            "bootstrap",
+            "facebook",
+            "hack",
+            "hhvm",
+            "xhp"
+        ]
+    }
+]

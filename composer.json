@@ -1,0 +1,15 @@
+{
+    "name": "logichigh/wow",
+    "description": "Watcher Online Wallet",
+    "require": {
+        "facebook/xhp-lib": "^2.5",
+        "hhvm/xhp-bootstrap" : "dev-master"
+    },
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Kevin Lohman",
+            "email": "badpirate@gmail.com"
+        }
+    ]
+}
