@@ -169,6 +169,10 @@
   $template =
   <html lang="en">
     <head>
+      <link rel="apple-touch-icon" sizes="57x57" href="images/Slice57w.png" />
+      <link rel="apple-touch-icon" sizes="72x72" href="images/Slice72w.png" />
+      <link rel="apple-touch-icon" sizes="114x114" href="images/Slice114w.png" />
+      <link rel="apple-touch-icon" sizes="144x144" href="images/Slice144w.png" />
       <script defer="" src="https://use.fontawesome.com/releases/v5.0.6/js/all.js"></script>
       <script src="//code.jquery.com/jquery-1.11.0.min.js"></script>
       <meta name="viewport" content="width=device-width, initial-scale=1"/>
