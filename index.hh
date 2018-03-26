@@ -4,6 +4,7 @@
 
   $btc = isset($_GET['btc']) ? explode(',',$_GET['btc']) : [];
   $eth = isset($_GET['eth']) ? explode(',',$_GET['eth']) : [];
+  $ltc = isset($_GET['ltc']) ? explode(',',$_GET['ltc']) : [];
 
   $addresses =
   <div class="panel">
@@ -20,6 +21,10 @@
         $url = "https://api.etherscan.io/api?module=account&action=balance&address=$address&tag=latest&apikey=".ETHERSCAN_API_KEY;
         $json = json_decode(file_get_contents($url));
         return ($json->result)/(pow(10,18));
+      case 'ltc':
+        $url = "https://api.blockcypher.com/v1/ltc/main/addrs/$address/balance";
+        $json = json_decode(file_get_contents($url));
+        return ($json->balance)/pow(10,8);
     }
     return 0;
   }
@@ -29,6 +34,10 @@
     switch ($coin) {
       case 'btc':
         return "https://blockchain.info/address/$address";
+      case 'eth':
+        return "https://etherscan.io/address/$address";
+      case 'ltc':
+        return "https://live.blockcypher.com/ltc/address/$address/";
     }
     return "";
   }
@@ -38,6 +47,7 @@
     switch ($coin) {
       case 'btc': return 'fab fa-btc';
       case 'eth': return 'fab fa-ethereum';
+      case 'ltc': return 'fas fa-lightbulb';
     }
     return '';
   }
@@ -75,10 +85,12 @@
   $addresses->appendChild(value_addresses('btc',$btc,$btctotal));
   $ethtotal = 0;
   $addresses->appendChild(value_addresses('eth',$eth,$ethtotal));
+  $ltctotal = 0;
+  $addresses->appendChild(value_addresses('ltc',$ltc,$ltctotal));
 
   $total = <div/>;
 
-  $rates = json_decode(file_get_contents("https://min-api.cryptocompare.com/data/price?fsym=USD&tsyms=ETH,BTC"),true);
+  $rates = json_decode(file_get_contents("https://min-api.cryptocompare.com/data/price?fsym=USD&tsyms=ETH,BTC,LTC"),true);
   setlocale(LC_MONETARY, 'en_US');
   function coin_total($coin,$total,$rates,&$totalusd)
   {
@@ -95,6 +107,7 @@
   $totalusd = 0;
   $total->appendChild(coin_total('btc',$btctotal,$rates,$totalusd));
   $total->appendChild(coin_total('eth',$ethtotal,$rates,$totalusd));
+  $total->appendChild(coin_total('ltc',$ltctotal,$rates,$totalusd));
 
   $totalsection = <div/>;
   if ($totalusd > 0)
@@ -105,7 +118,7 @@
         <p>Total USD: {$totalformat}</p>
       </div>;
   }
-  
+
   function addCoin($coinType = "btc",) {
     $divID = "$coinType-address-add";
     $onclick = "add_coin_address('$coinType', $( '#$divID' ).val());";
@@ -122,6 +135,7 @@
   $addAddress = <div class="panel"/>;
   $addAddress->appendChild(addCoin("btc"));
   $addAddress->appendChild(addCoin("eth"));
+  $addAddress->appendChild(addCoin('ltc'));
 
   $otherCoins =
     <div class="panel">
@@ -132,7 +146,7 @@
         along with information about the blockchain for that wallet as known, and if I add it I'll transfer the coins :)</p>
     </div>;
 
-  $js_addresses = "{ 'btc' : ".json_encode($btc).", 'eth' : ".json_encode($eth)."}";
+  $js_addresses = "{ 'btc' : ".json_encode($btc).", 'eth' : ".json_encode($eth).", 'ltc' : ".json_encode($ltc)." }";
   $template =
   <html lang="en">
     <head>
