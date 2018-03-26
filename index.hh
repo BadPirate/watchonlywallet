@@ -8,9 +8,14 @@
   $xmr = isset($_GET['xmr']) ? explode(',',$_GET['xmr']) : [];
 
   $addresses =
-  <div class="panel">
-    <p>Welcome to Watcher Online Wallet.  A light-weight, multi-currency <b>Watch Only</b> wallet.</p>
-    <p>Add your watch only addresses below to see how much your coins are worth, and bookmark the URL for quick access in the future</p>
+  <div class="panel panel-default">
+    <div class="panel-heading">
+      Welcome to Watcher Online Wallet
+    </div>
+    <div class="panel-body">
+      A light-weight, multi-currency <b>Watch Only</b> wallet. Add your watch only addresses below
+      to see how much your coins are worth, and bookmark the URL for quick access in the future
+    </div>
   </div>;
 
   function value_address($coin, $address)
@@ -58,8 +63,23 @@
     return '';
   }
 
-  function value_addresses($coin, $addresses, &$total)
+  $rates = json_decode(file_get_contents("https://min-api.cryptocompare.com/data/price?fsym=USD&tsyms=ETH,BTC,LTC,XMR"),true);
+  setlocale(LC_MONETARY, 'en_US');
+  function coin_total($coin,$total,$rates,&$totalusd)
   {
+    if ($total == 0) return <div/>;
+    $rate = 1/$rates[strtoupper($coin)];
+    $usd = money_format('%.2n',$total * $rate);
+    $totalusd = $totalusd + $usd;
+    return
+      <div class="panel">
+        {$total}<i class={coin_fa($coin)}/> @ {$rate}/USD = {$usd}<br/>
+      </div>;
+  }
+
+  function value_addresses($coin, $addresses, &$total, &$totalusd)
+  {
+    global $rates;
     if (count($addresses) == 0)
     {
       return <div/>;
@@ -83,49 +103,47 @@
           </a>
         </div>);
     }
-    return $result;
+    return
+      <div>
+        {$result}
+        {coin_total($coin,$total,$rates,$totalusd)}
+      </div>;
   }
-
-  $addresses = <div class="panel"/>;
-  $btctotal = 0;
-  $addresses->appendChild(value_addresses('btc',$btc,$btctotal));
-  $ethtotal = 0;
-  $addresses->appendChild(value_addresses('eth',$eth,$ethtotal));
-  $ltctotal = 0;
-  $addresses->appendChild(value_addresses('ltc',$ltc,$ltctotal));
-  $xmrtotal = 0;
-  $addresses->appendChild(value_addresses('xmr',$xmr,$xmrtotal));
 
   $total = <div/>;
-
-  $rates = json_decode(file_get_contents("https://min-api.cryptocompare.com/data/price?fsym=USD&tsyms=ETH,BTC,LTC,XMR"),true);
-  setlocale(LC_MONETARY, 'en_US');
-  function coin_total($coin,$total,$rates,&$totalusd)
-  {
-    if ($total == 0) return <div/>;
-    $rate = 1/$rates[strtoupper($coin)];
-    $usd = money_format('%.2n',$total * $rate);
-    $totalusd = $totalusd + $usd;
-    return
-      <div class="panel">
-        {$total}<i class={coin_fa($coin)}/> @ {$rate}/USD = {$usd}<br/>
-      </div>;
-  }
-
-  $totalusd = 0;
-  $total->appendChild(coin_total('btc',$btctotal,$rates,$totalusd));
-  $total->appendChild(coin_total('eth',$ethtotal,$rates,$totalusd));
-  $total->appendChild(coin_total('ltc',$ltctotal,$rates,$totalusd));
-  $total->appendChild(coin_total('xmr',$xmrtotal,$rates,$totalusd));
-
   $totalsection = <div/>;
-  if ($totalusd > 0)
+  $totalusd = 0;
+
+  if (count($btc) > 0 || count($eth) > 0 || count($ltc) > 0 || count($xmr) > 0)
   {
-    $totalformat = money_format('%.2n',$totalusd);
-    $totalsection =
-      <div>
-        <p>Total USD: {$totalformat}</p>
+    $coin_container = <div class="panel-body"/>;
+    $btctotal = 0;
+    $coin_container->appendChild(value_addresses('btc',$btc,$btctotal,$totalusd));
+    $ethtotal = 0;
+    $coin_container->appendChild(value_addresses('eth',$eth,$ethtotal,$totalusd));
+    $ltctotal = 0;
+    $coin_container->appendChild(value_addresses('ltc',$ltc,$ltctotal,$totalusd));
+    $xmrtotal = 0;
+    $coin_container->appendChild(value_addresses('xmr',$xmr,$xmrtotal,$totalusd));
+
+    $addresses =
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          Watch Only Wallet
+        </div>
+        {$coin_container}
       </div>;
+
+    if ($totalusd > 0)
+    {
+      $totalformat = money_format('%.2n',$totalusd);
+      $totalsection =
+        <div class="panel panel-primary">
+          <div class="panel-heading">
+            Total USD: {$totalformat}
+          </div>
+        </div>;
+    }
   }
 
   function addCoin($coinType = "btc",) {
@@ -141,25 +159,38 @@
     </div>;
   }
 
-  $addAddress = <div class="panel"/>;
-  $addAddress->appendChild(addCoin("btc"));
-  $addAddress->appendChild(addCoin("eth"));
-  $addAddress->appendChild(addCoin('ltc'));
-  $addAddress->appendChild(
-    <div class="panel">
-      <p>Coins below are harder to track by address, instead enter the total #
-        of coins for that type you have</p>
-    </div>
-  );
-  $addAddress->appendChild(addCoin('xmr'));
+  $add_by_address_body = <div class="panel-body"/>;
+  $add_by_address_body->appendChild(addCoin("btc"));
+  $add_by_address_body->appendChild(addCoin("eth"));
+  $add_by_address_body->appendChild(addCoin('ltc'));
+
+  $add_by_value_body = <div class="panel-body"/>;
+  $add_by_value_body->appendChild(addCoin('xmr'));
+
+  $addAddress =
+    <div>
+      <div class="panel panel-default">
+        <div class="panel-heading">Add currency by address</div>
+        {$add_by_address_body}
+      </div>
+      <div class="panel panel-default">
+        <div class="panel-heading">Add currency by amount you own.</div>
+        {$add_by_value_body}
+      </div>
+    </div>;
 
   $otherCoins =
-    <div class="panel">
-      <p>I built this site to track the total values of the various crypto currencies I hold.
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        Don't see your favorite here?
+      </div>
+      <div class="panel-body">
+        I built this site to track the total values of the various crypto currencies I hold.
         As such, it currently only supports those coins that I have some value in.  If you'd like to see
         another type of crypto currency supported, the easiest way would be to put about $10 in a wallet of that
         type, and send the private key to <a href="mailto:request@watchonlywallet.net">request@watchonlywallet.net</a>
-        along with information about the blockchain for that wallet as known, and if I add it I'll transfer the coins :)</p>
+        along with information about the blockchain for that wallet as known, and if I add it I'll transfer the coins :)
+      </div>
     </div>;
 
   $js_addresses = "{ 'btc' : ".json_encode($btc).",
