@@ -6,7 +6,7 @@ function reloadURL()
     addresses = crypto_addresses[coin];
     if (addresses.length > 0)
     {
-      url = url + "btc=" + addresses.join(",");
+      url = url + "&" + coin + "=" + addresses.join(",");
     }
   }
   window.location.href = url;

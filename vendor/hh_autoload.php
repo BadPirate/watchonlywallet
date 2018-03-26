@@ -5,7 +5,7 @@
 namespace Facebook\AutoloadMap\Generated;
 
 function build_id() {
-  return '2018-03-25T18:01:43+00:00!be3cf85b17dd394f5a4def8395901d86';
+  return '2018-03-26T03:28:10+00:00!6ea8f3867e74cfbbd70c3d767565d3fc';
 }
 
 function root() {

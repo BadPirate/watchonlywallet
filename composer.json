@@ -3,7 +3,8 @@
     "description": "Watcher Online Wallet",
     "require": {
         "facebook/xhp-lib": "^2.5",
-        "hhvm/xhp-bootstrap" : "dev-master"
+        "hhvm/xhp-bootstrap" : "dev-master",
+        "components/font-awesome": "^5.0"
     },
     "license": "MIT",
     "authors": [

@@ -1,5 +1,6 @@
 <?hh
   require_once('vendor/hh_autoload.php');
+  require_once('keys.hh');
 
   $btc = isset($_GET['btc']) ? explode(',',$_GET['btc']) : [];
   $eth = isset($_GET['eth']) ? explode(',',$_GET['eth']) : [];
@@ -10,39 +11,101 @@
     <p>Add your watch only addresses below to see how much your coins are worth, and bookmark the URL for quick access in the future</p>
   </div>;
 
-  if (count($btc) > 0)
+  function value_address($coin, $address)
   {
-    $addresses = <div class="list-group"/>;
-    $btctotal = 0;
-    foreach ($btc as $address) {
-      $value = file_get_contents("https://blockchain.info/q/addressbalance/$address")/100000000;
-      $btctotal = $value + $btctotal;
-      $deleteAction = "delete_coin_address('btc','$address');";
-      $addresses->appendChild(
+    switch ($coin) {
+      case 'btc':
+        return file_get_contents("https://blockchain.info/q/addressbalance/$address")/100000000;
+      case 'eth':
+        $url = "https://api.etherscan.io/api?module=account&action=balance&address=$address&tag=latest&apikey=".ETHERSCAN_API_KEY;
+        $json = json_decode(file_get_contents($url));
+        return ($json->result)/(pow(10,18));
+    }
+    return 0;
+  }
+
+  function link_address($coin, $address)
+  {
+    switch ($coin) {
+      case 'btc':
+        return "https://blockchain.info/address/$address";
+    }
+    return "";
+  }
+
+  function coin_fa($coin)
+  {
+    switch ($coin) {
+      case 'btc': return 'fab fa-btc';
+      case 'eth': return 'fab fa-ethereum';
+    }
+    return '';
+  }
+
+  function value_addresses($coin, $addresses, &$total)
+  {
+    if (count($addresses) == 0)
+    {
+      return <div/>;
+    }
+
+    $result = <div class="list-group"/>;
+    foreach ($addresses as $address) {
+      $value = value_address($coin, $address);
+      $total = $total + $value;
+      $coin_class = coin_fa($coin);
+      $link = link_address($coin, $address);
+      $deleteAction = "delete_coin_address('$coin','$address');";
+      $result->appendChild(
         <div class="list-group-item">
           <i class="fa fa-trash pull-right" onclick={$deleteAction}/>
           <span class="badge">
-            {$value}<i class="fa fa-btc"></i>
+            {$value}<i class={$coin_class}/>
           </span>
-          <a href={"https://blockchain.info/address/$address"} target="new">
+          <a href={$link} target="new">
             {$address}
           </a>
         </div>);
     }
+    return $result;
   }
+
+  $addresses = <div class="panel"/>;
+  $btctotal = 0;
+  $addresses->appendChild(value_addresses('btc',$btc,$btctotal));
+  $ethtotal = 0;
+  $addresses->appendChild(value_addresses('eth',$eth,$ethtotal));
 
   $total = <div/>;
-  if ($btctotal > 0)
+
+  $rates = json_decode(file_get_contents("https://min-api.cryptocompare.com/data/price?fsym=USD&tsyms=ETH,BTC"),true);
+  setlocale(LC_MONETARY, 'en_US');
+  function coin_total($coin,$total,$rates,&$totalusd)
   {
-    setlocale(LC_MONETARY, 'en_US');
-    $btcRate = 1/file_get_contents("https://blockchain.info/tobtc?currency=USD&value=1");
-    $btcUSDTotal = money_format('%.2n',$btctotal * $btcRate);
-    $total =
-    <div class="panel">
-      {$btctotal}<i class="fa fa-btc"/> @ {$btcRate}/USD = {$btcUSDTotal}<br/>
-    </div>;
+    if ($total == 0) return <div/>;
+    $rate = 1/$rates[strtoupper($coin)];
+    $usd = money_format('%.2n',$total * $rate);
+    $totalusd = $totalusd + $usd;
+    return
+      <div class="panel">
+        {$total}<i class={coin_fa($coin)}/> @ {$rate}/USD = {$usd}<br/>
+      </div>;
   }
 
+  $totalusd = 0;
+  $total->appendChild(coin_total('btc',$btctotal,$rates,$totalusd));
+  $total->appendChild(coin_total('eth',$ethtotal,$rates,$totalusd));
+
+  $totalsection = <div/>;
+  if ($totalusd > 0)
+  {
+    $totalformat = money_format('%.2n',$totalusd);
+    $totalsection =
+      <div>
+        <p>Total USD: {$totalformat}</p>
+      </div>;
+  }
+  
   function addCoin($coinType = "btc",) {
     $divID = "$coinType-address-add";
     $onclick = "add_coin_address('$coinType', $( '#$divID' ).val());";
@@ -58,7 +121,7 @@
 
   $addAddress = <div class="panel"/>;
   $addAddress->appendChild(addCoin("btc"));
-  // $addAddress->appendChild(addCoin("eth"));
+  $addAddress->appendChild(addCoin("eth"));
 
   $otherCoins =
     <div class="panel">
@@ -73,7 +136,7 @@
   $template =
   <html lang="en">
     <head>
-      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"/>
+      <script defer="" src="https://use.fontawesome.com/releases/v5.0.6/js/all.js"></script>
       <script src="//code.jquery.com/jquery-1.11.0.min.js"></script>
       <meta name="viewport" content="width=device-width, initial-scale=1"/>
       <!-- Latest compiled and minified CSS -->
@@ -93,6 +156,7 @@
       <title>Watcher Online Wallet</title>
     </head>
     <body>
+    {$totalsection}
     {$addresses}
     {$total}
     {$addAddress}
